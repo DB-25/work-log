@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Work Log &amp; Weekly Reports</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>Work Log</h1>
+      <p class="subtitle">Track daily accomplishments &amp; generate weekly reports</p>
+    </header>
+
+    <nav class="tabs">
+      <button class="tab active" data-tab="calendar">Calendar</button>
+      <button class="tab" data-tab="report">Weekly Report</button>
+    </nav>
+
+    <main>
+      <!-- Calendar View -->
+      <section id="calendar-view" class="view active">
+        <div class="calendar-header">
+          <button id="prev-month" aria-label="Previous month">&larr;</button>
+          <h2 id="current-month"></h2>
+          <button id="next-month" aria-label="Next month">&rarr;</button>
+        </div>
+        <div class="calendar-grid">
+          <div class="day-label">Mon</div>
+          <div class="day-label">Tue</div>
+          <div class="day-label">Wed</div>
+          <div class="day-label">Thu</div>
+          <div class="day-label">Fri</div>
+          <div class="day-label weekend">Sat</div>
+          <div class="day-label weekend">Sun</div>
+          <div id="calendar-days"></div>
+        </div>
+      </section>
+
+      <!-- Report View -->
+      <section id="report-view" class="view">
+        <div class="report-controls">
+          <label for="report-week">Select week ending Friday:</label>
+          <select id="report-week"></select>
+          <button id="generate-report" class="btn-primary">Generate Report</button>
+        </div>
+        <div id="report-output" class="report-output hidden">
+          <div class="report-actions">
+            <button id="copy-report" class="btn-secondary">Copy to Clipboard</button>
+          </div>
+          <div id="report-content"></div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Entry Modal -->
+    <div id="entry-modal" class="modal hidden">
+      <div class="modal-backdrop"></div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="modal-date"></h3>
+          <button id="close-modal" aria-label="Close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <label for="entry-text">What did you accomplish today?</label>
+          <textarea id="entry-text" rows="6" placeholder="- Completed feature X&#10;- Fixed bug in Y&#10;- Met with team about Z"></textarea>
+        </div>
+        <div class="modal-footer">
+          <button id="delete-entry" class="btn-danger">Delete</button>
+          <button id="save-entry" class="btn-primary">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
