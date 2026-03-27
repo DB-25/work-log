@@ -435,6 +435,181 @@ header h1 {
   font-style: italic;
 }
 
+/* Polish Button */
+.btn-polish {
+  background: linear-gradient(135deg, #7c3aed, #6d28d9);
+  color: white;
+  border: none;
+  padding: 0.6rem 1.25rem;
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+}
+
+.btn-polish:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.btn-polish:disabled {
+  opacity: 0.6;
+  cursor: wait;
+  transform: none;
+}
+
+/* Polished Section */
+.polished-section {
+  border-top: 2px solid #7c3aed;
+}
+
+.polished-section.hidden {
+  display: none;
+}
+
+.polished-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  background: #faf5ff;
+}
+
+.polished-badge {
+  background: linear-gradient(135deg, #7c3aed, #6d28d9);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  letter-spacing: 0.02em;
+}
+
+#polished-content {
+  padding: 1.5rem;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  background: #faf5ff;
+}
+
+#polished-content h4 {
+  font-size: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 0.25rem;
+  color: #6d28d9;
+}
+
+#polished-content h4:first-child {
+  margin-top: 0;
+}
+
+#polished-content ul {
+  margin-left: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+#polished-content li {
+  margin-bottom: 0.15rem;
+}
+
+#polished-content p {
+  margin-bottom: 0.5rem;
+}
+
+.polish-error {
+  color: var(--danger);
+  font-style: italic;
+}
+
+/* API Key Section */
+.api-key-section {
+  margin-top: 1.5rem;
+}
+
+.api-key-section details {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.api-key-section summary {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  user-select: none;
+}
+
+.api-key-section summary:hover {
+  color: var(--text);
+}
+
+.api-key-inner {
+  padding: 0 1rem 1rem;
+}
+
+.api-key-hint {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+  line-height: 1.4;
+}
+
+.api-key-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.api-key-row input {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 0.85rem;
+  font-family: monospace;
+  transition: border-color 0.2s;
+}
+
+.api-key-row input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.btn-danger-sm {
+  background: none;
+  color: var(--danger);
+  border: 1px solid var(--danger);
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+
+.btn-danger-sm:hover {
+  background: #fef2f2;
+}
+
+.api-key-status {
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+  min-height: 1.2em;
+}
+
+.api-key-status.saved {
+  color: #16a34a;
+}
+
+.api-key-status.error {
+  color: var(--danger);
+}
+
 /* Responsive */
 @media (max-width: 600px) {
   .app { padding: 1rem 0.5rem; }

@@ -328,6 +328,158 @@ document.getElementById('copy-report').addEventListener('click', () => {
   });
 });
 
+// --- API Key Management ---
+function getApiKey() {
+  return localStorage.getItem('worklog-openai-key') || '';
+}
+
+function saveApiKey(key) {
+  if (key.trim()) {
+    localStorage.setItem('worklog-openai-key', key.trim());
+  } else {
+    localStorage.removeItem('worklog-openai-key');
+  }
+}
+
+function updateApiKeyStatus() {
+  const status = document.getElementById('api-key-status');
+  const input = document.getElementById('api-key-input');
+  const key = getApiKey();
+  if (key) {
+    status.textContent = `Key saved (${key.slice(0, 7)}...${key.slice(-4)})`;
+    status.className = 'api-key-status saved';
+    input.value = '';
+    input.placeholder = 'Key saved — paste a new one to replace';
+  } else {
+    status.textContent = '';
+    status.className = 'api-key-status';
+    input.placeholder = 'sk-...';
+  }
+}
+
+document.getElementById('save-api-key').addEventListener('click', () => {
+  const input = document.getElementById('api-key-input');
+  if (!input.value.trim()) return;
+  saveApiKey(input.value);
+  updateApiKeyStatus();
+});
+
+document.getElementById('clear-api-key').addEventListener('click', () => {
+  saveApiKey('');
+  updateApiKeyStatus();
+});
+
+document.getElementById('api-key-input').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') document.getElementById('save-api-key').click();
+});
+
+// --- AI Polish ---
+document.getElementById('polish-report').addEventListener('click', async () => {
+  const apiKey = getApiKey();
+  if (!apiKey) {
+    document.getElementById('api-key-section').querySelector('details').open = true;
+    document.getElementById('api-key-input').focus();
+    const status = document.getElementById('api-key-status');
+    status.textContent = 'Please add your OpenAI API key first';
+    status.className = 'api-key-status error';
+    return;
+  }
+
+  const outputEl = document.getElementById('report-output');
+  const plainText = outputEl.dataset.plainText;
+  if (!plainText || !plainText.trim()) return;
+
+  const btn = document.getElementById('polish-report');
+  const polishedSection = document.getElementById('polished-section');
+  const polishedContent = document.getElementById('polished-content');
+
+  btn.disabled = true;
+  btn.textContent = 'Polishing...';
+  polishedSection.classList.add('hidden');
+
+  try {
+    const res = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        messages: [
+          {
+            role: 'system',
+            content: 'You are a professional writing assistant. Rewrite the following weekly work report so it is polished, concise, and suitable for sharing with a manager. Use a confident, professional tone that highlights impact and accomplishments. Group related items where it makes sense. Keep bullet-point format. Do not invent work that isn\'t mentioned — only rephrase and reorganize what\'s there. Preserve the week date range in the title.',
+          },
+          { role: 'user', content: plainText },
+        ],
+        temperature: 0.7,
+        max_tokens: 1500,
+      }),
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      const msg = err.error?.message || `OpenAI returned ${res.status}`;
+      throw new Error(msg);
+    }
+
+    const data = await res.json();
+    const polished = data.choices?.[0]?.message?.content;
+    if (!polished) throw new Error('No response from OpenAI');
+
+    polishedContent.innerHTML = renderMarkdown(polished);
+    polishedSection.dataset.plainText = polished;
+    polishedSection.classList.remove('hidden');
+  } catch (err) {
+    polishedContent.innerHTML = `<p class="polish-error">Could not polish the report: ${escapeHtml(err.message)}</p>`;
+    polishedSection.classList.remove('hidden');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Polish for Manager';
+  }
+});
+
+document.getElementById('copy-polished').addEventListener('click', () => {
+  const text = document.getElementById('polished-section').dataset.plainText;
+  if (!text) return;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copy-polished');
+    const original = btn.textContent;
+    btn.textContent = 'Copied!';
+    setTimeout(() => { btn.textContent = original; }, 2000);
+  });
+});
+
+function renderMarkdown(text) {
+  const lines = text.split('\n');
+  let html = '';
+  let inList = false;
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+
+    if (trimmed.startsWith('# ')) {
+      if (inList) { html += '</ul>'; inList = false; }
+      html += `<div class="report-title">${escapeHtml(trimmed.slice(2))}</div>`;
+    } else if (trimmed.startsWith('## ') || trimmed.startsWith('### ')) {
+      if (inList) { html += '</ul>'; inList = false; }
+      const level = trimmed.startsWith('### ') ? 3 : 2;
+      html += `<h4>${escapeHtml(trimmed.slice(level + 1))}</h4>`;
+    } else if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
+      if (!inList) { html += '<ul>'; inList = true; }
+      html += `<li>${escapeHtml(trimmed.slice(2))}</li>`;
+    } else if (trimmed === '') {
+      if (inList) { html += '</ul>'; inList = false; }
+    } else {
+      if (inList) { html += '</ul>'; inList = false; }
+      html += `<p>${escapeHtml(trimmed)}</p>`;
+    }
+  }
+  if (inList) html += '</ul>';
+  return html;
+}
+
 function escapeHtml(str) {
   const div = document.createElement('div');
   div.textContent = str;
@@ -336,3 +488,4 @@ function escapeHtml(str) {
 
 // --- Init ---
 renderCalendar();
+updateApiKeyStatus();

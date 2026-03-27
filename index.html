@@ -48,8 +48,30 @@
         <div id="report-output" class="report-output hidden">
           <div class="report-actions">
             <button id="copy-report" class="btn-secondary">Copy to Clipboard</button>
+            <button id="polish-report" class="btn-polish">Polish for Manager</button>
           </div>
           <div id="report-content"></div>
+          <div id="polished-section" class="polished-section hidden">
+            <div class="polished-header">
+              <span class="polished-badge">AI-Polished</span>
+              <button id="copy-polished" class="btn-secondary">Copy Polished Version</button>
+            </div>
+            <div id="polished-content"></div>
+          </div>
+        </div>
+        <div id="api-key-section" class="api-key-section">
+          <details>
+            <summary>OpenAI API Key</summary>
+            <div class="api-key-inner">
+              <p class="api-key-hint">Your key is stored only in this browser's localStorage and sent directly to OpenAI.</p>
+              <div class="api-key-row">
+                <input type="password" id="api-key-input" placeholder="sk-..." autocomplete="off">
+                <button id="save-api-key" class="btn-secondary">Save Key</button>
+                <button id="clear-api-key" class="btn-danger-sm">Clear</button>
+              </div>
+              <p id="api-key-status" class="api-key-status"></p>
+            </div>
+          </details>
         </div>
       </section>
     </main>
